@@ -1,8 +1,9 @@
 import { useState, useRef} from 'react';
-
+import { useHistory } from 'react-router-dom';
 import classes from './AuthForm.module.css';
 
 const AuthForm = () => {
+  const history = useHistory()
   const emialInputRef = useRef()
   const passwordInputRef = useRef()
 
@@ -53,7 +54,9 @@ const AuthForm = () => {
       }
     }).then((data) => {
         alert('Authentication Successful')
+        console.log('User has successfully signed up')
       localStorage.setItem('token', data.idToken)
+      history.replace('/Welcome')
   })
     .catch((err) =>{
       alert(err.errorMessage)
