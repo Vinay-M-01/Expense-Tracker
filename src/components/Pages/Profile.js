@@ -4,8 +4,9 @@ import { useRef, useState, useEffect } from "react";
 
 const Profile = (props) => {
 
-    const  [userName,setuserName] = useState('')
+    const [userName,setuserName] = useState('')
     const [link, setLink]  = useState('');
+    const [notVerified, setNotVerified] = useState(true);
 
     const enteredNameRef = useRef()
     const enteredPhotoUrlRef = useRef()
@@ -25,12 +26,38 @@ const Profile = (props) => {
         console.log(data)
         setuserName(data.displayName)
         setLink(data.photoUrl)
+        data.emailVerified && setNotVerified(false)
         
     } 
 
     useEffect(()=>{
         getBackData()
     },[])
+
+    // Verify the User email by sending a verification link to there respective email id 
+    const verifyEmailHandler =()=>{
+   fetch('https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=AIzaSyD-3XCAdzpwYYUEDVAj_KcDkgVwz4d57OU',
+        {
+            method:'POST',
+            body: JSON.stringify({
+                requestType: "VERIFY_EMAIL",
+                idToken: localStorage.getItem('token'),
+
+            })
+        }).then(res=>{
+            if(res.ok){
+                alert('Email ID Verified')
+                res.json()
+            }else{
+                throw new Error('Authentication Failed');
+            }
+        }).catch(
+            err=>{
+                console.log(err)
+
+            }
+        )
+    }
 
     const submitHandler = (e)=>{
         e.preventDefault()
@@ -73,6 +100,7 @@ const Profile = (props) => {
                 </span>
             </div>
             <button type="submit" className="update"> Update </button>
+            {notVerified && <button onClick={verifyEmailHandler}> Verify Email</button>}
         </form>
     )
 }
