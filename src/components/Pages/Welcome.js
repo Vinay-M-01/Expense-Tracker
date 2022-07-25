@@ -1,7 +1,16 @@
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 
 const Welcome = (props) => {
+
+    const history  = useHistory();
+    function logoutHandler(){
+        localStorage.clear();
+        history.replace('/Login')
+
+    };
   return (
+    <>
+    <button onClick={logoutHandler}> LogOut </button>
     <div style={{ border: "1px solid black", padding: "10px" }}>
       <span
         style={{
@@ -37,6 +46,7 @@ const Welcome = (props) => {
         </Link>
       </span>
     </div>
+    </>
   );
 };
 
