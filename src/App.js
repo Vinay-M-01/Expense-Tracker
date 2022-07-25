@@ -1,5 +1,6 @@
 import { Redirect, Route } from "react-router-dom";
 import AuthForm from "./components/Auth/AuthForm";
+import Profile from "./components/Pages/Profile";
 import Welcome from "./components/Pages/Welcome";
 
 function App() {
@@ -13,6 +14,9 @@ function App() {
       </Route>
       <Route path="/">
         <Redirect to="/Login"/>
+      </Route>
+      <Route path="/Profile">
+        <Profile/>
       </Route>
     </div>
   );
