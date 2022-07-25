@@ -1,11 +1,36 @@
 
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 
 
 const Profile = (props) => {
 
+    const  [userName,setuserName] = useState('')
+    const [link, setLink]  = useState('');
+
     const enteredNameRef = useRef()
     const enteredPhotoUrlRef = useRef()
+    
+    // Editing the user details- fetching data on reload
+    async function getBackData(){
+        console.log('Async Function')
+        const response =  await  fetch('https://identitytoolkit.googleapis.com/v1/accounts:update?key=AIzaSyD-3XCAdzpwYYUEDVAj_KcDkgVwz4d57OU',
+        {
+            method:'POST',
+            body:JSON.stringify({
+                idToken:localStorage.getItem('token') 
+            })
+        })
+
+        const data = await response.json()
+        console.log(data)
+        setuserName(data.displayName)
+        setLink(data.photoUrl)
+        
+    } 
+
+    useEffect(()=>{
+        getBackData()
+    },[])
 
     const submitHandler = (e)=>{
         e.preventDefault()
@@ -40,11 +65,11 @@ const Profile = (props) => {
             <div>
                 <span>
                     <label htmlFor="fullName">Full Name: </label>
-                    <input type="text" ref={enteredNameRef} />
+                    <input type="text" ref={enteredNameRef} defaultValue={userName} />
                 </span>
                 <span>
                     <label htmlFor="profilePhoto">Profile Photo URL: </label>
-                    <input type="link" ref={enteredPhotoUrlRef} />
+                    <input type="link" ref={enteredPhotoUrlRef} defaultValue={link}/>
                 </span>
             </div>
             <button type="submit" className="update"> Update </button>
