@@ -56,6 +56,7 @@ const AuthForm = () => {
         alert('Authentication Successful')
         console.log('User has successfully signed up')
       localStorage.setItem('token', data.idToken)
+      localStorage.setItem('email', enteredEmail.replace('@','').replace('.',''))
       history.replace('/Welcome')
   })
     .catch((err) =>{

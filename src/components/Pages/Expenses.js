@@ -1,12 +1,42 @@
 import classes from './Expenses.module.css'
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import ExpensesList from './ExpensesList'
 
 const Expenses = (props) => {
+    const loggedEmail = localStorage.getItem('email')
     const amoutInputRef = useRef()
     const descriptionInputRef = useRef()
     const categoryInputRef = useRef()
     const [expenses, setExpenses] = useState([])
+
+    // On reload get all the data from the backend 
+    useEffect(()=>{
+        let initialData =[]
+        fetch(`https://expense-tracker-3cdd6-default-rtdb.firebaseio.com/${loggedEmail}.json`)
+            .then((res) =>{
+                if(res.ok){
+                    return res.json()
+                }else{
+                    return res.json().then((data) =>{
+                        let errorMessage = 'Get Request Failed';
+                        if(data && data.error && data.error.message){
+                            errorMessage = data.error.message
+                        }
+                        throw new Error(errorMessage);
+                    })
+                }
+            }).then((data) =>{
+                
+                for(let val of Object.values(data)){
+                    initialData.push(val)
+                    setExpenses(expenses => [...expenses, {amount: val.Amount, desciption: val.Description, category: val.Category}])
+                }
+                
+            })
+            console.log(initialData)
+            
+    },[loggedEmail])
+ 
 
     const submitHandler = (e) => {
         e.preventDefault()
@@ -15,7 +45,36 @@ const Expenses = (props) => {
         const enteredDescription = descriptionInputRef.current.value
         const enteredCategory = categoryInputRef.current.value
 
-        setExpenses([...expenses, {amount:enteredAmount, desciption: enteredDescription, category: enteredCategory}])
+        // setExpenses([...expenses, {amount:enteredAmount, desciption: enteredDescription, category: enteredCategory}])
+
+        fetch(`https://expense-tracker-3cdd6-default-rtdb.firebaseio.com/${loggedEmail}.json`,{
+            method:"POST",
+            body:JSON.stringify({
+                Amount: enteredAmount,
+                Description: enteredDescription,
+                Category: enteredCategory,
+            })
+        }).then(res =>{
+            console.log(res)
+            if(res.ok){
+                return res.json()
+            }else{
+                return res.json().then(data =>{
+                    let errorMessage = 'Authentication Request Failed';
+                    if(data && data.error && data.error.message){
+                        errorMessage = data.error.message
+                    }
+                    throw new Error(errorMessage);
+                })
+            }
+        }).then((data) => {
+            console.log(data)
+            alert('Data is sent to Backend successfully!!!')
+            setExpenses([...expenses, {amount:enteredAmount, desciption: enteredDescription, category: enteredCategory}])
+            
+        }).catch(err =>{
+            alert(err.errorMessage)
+        })
         
     }
     return (
