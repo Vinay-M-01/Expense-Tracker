@@ -1,5 +1,6 @@
 import { Redirect, Route, Switch } from "react-router-dom";
 import AuthForm from "./components/Auth/AuthForm";
+import Expenses from "./components/Pages/Expenses";
 import ForgotPassword from "./components/Pages/ForgotPassword";
 import Profile from "./components/Pages/Profile";
 import Welcome from "./components/Pages/Welcome";
@@ -11,6 +12,7 @@ function App() {
 
       <Route path="/Welcome">
         <Welcome/>
+        <Expenses/>
       </Route>
 
       <Route path="/Login" exact>
