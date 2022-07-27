@@ -8,6 +8,7 @@ const Expenses = (props) => {
     const descriptionInputRef = useRef()
     const categoryInputRef = useRef()
     const [expenses, setExpenses] = useState([])
+    let ExpensesLIST = ExpensesList
 
     // On reload get all the data from the backend 
     useEffect(()=>{
@@ -26,16 +27,13 @@ const Expenses = (props) => {
                     })
                 }
             }).then((data) =>{
-                
-                for(let val of Object.values(data)){
+                for(let [key,val] of Object.entries(data)){       
                     initialData.push(val)
-                    setExpenses(expenses => [...expenses, {amount: val.Amount, desciption: val.Description, category: val.Category}])
+                    setExpenses(expenses => [...expenses, {name: key, amount: val.Amount, desciption: val.Description, category: val.Category}])
                 }
-                
             })
-            console.log(initialData)
-            
-    },[loggedEmail])
+            // console.log(initialData)
+    },[loggedEmail, ExpensesLIST])
  
 
     const submitHandler = (e) => {
@@ -44,6 +42,7 @@ const Expenses = (props) => {
         const enteredAmount = amoutInputRef.current.value
         const enteredDescription = descriptionInputRef.current.value
         const enteredCategory = categoryInputRef.current.value
+        // let fetchedName;
 
         // setExpenses([...expenses, {amount:enteredAmount, desciption: enteredDescription, category: enteredCategory}])
 
@@ -68,9 +67,10 @@ const Expenses = (props) => {
                 })
             }
         }).then((data) => {
-            console.log(data)
+            // fetchedName = data.name
+            // console.log('name= ' + fetchedName)
             alert('Data is sent to Backend successfully!!!')
-            setExpenses([...expenses, {amount:enteredAmount, desciption: enteredDescription, category: enteredCategory}])
+            setExpenses([...expenses, {name: data.name, amount:enteredAmount, desciption: enteredDescription, category: enteredCategory}])
             
         }).catch(err =>{
             alert(err.errorMessage)
@@ -119,6 +119,7 @@ const Expenses = (props) => {
       </form>
     </section>
     <ExpensesList expenses ={expenses}></ExpensesList>
+    
     </>
     )
 }
