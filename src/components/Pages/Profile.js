@@ -1,9 +1,11 @@
 
 import { useRef, useState, useEffect } from "react";
+import { useHistory } from "react-router-dom";
 
 
 const Profile = (props) => {
 
+    const history = useHistory()
     const [userName,setuserName] = useState('')
     const [link, setLink]  = useState('');
     const [notVerified, setNotVerified] = useState(true);
@@ -87,6 +89,7 @@ const Profile = (props) => {
     }
     return(
         <form onSubmit={submitHandler}>
+            <button onClick={() =>{ history.replace('./Welcome')}} style={{fontSize:"17px", color:"brown"}}> Back </button>
             <h2> Contact Details</h2>
             <button> Cancel </button>
             <div>

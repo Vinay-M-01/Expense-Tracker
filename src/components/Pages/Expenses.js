@@ -1,18 +1,23 @@
 import classes from './Expenses.module.css'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef} from 'react'
 import ExpensesList from './ExpensesList'
+import { useDispatch, useSelector } from 'react-redux';
+import { expenseActions } from '../../store'
 
 const Expenses = (props) => {
+    const dispatch = useDispatch()
+    const myExpensesDetails = useSelector(state => state.expenses.expensesState)
+
     const loggedEmail = localStorage.getItem('email')
     const amoutInputRef = useRef()
     const descriptionInputRef = useRef()
     const categoryInputRef = useRef()
-    const [expenses, setExpenses] = useState([])
+    // const [expenses, setExpenses] = useState([])
     let ExpensesLIST = ExpensesList
 
     // On reload get all the data from the backend 
     useEffect(()=>{
-        let initialData =[]
+        
         fetch(`https://expense-tracker-3cdd6-default-rtdb.firebaseio.com/${loggedEmail}.json`)
             .then((res) =>{
                 if(res.ok){
@@ -27,13 +32,17 @@ const Expenses = (props) => {
                     })
                 }
             }).then((data) =>{
-                for(let [key,val] of Object.entries(data)){       
+    
+                let initialData =[]
+                for(let val of Object.values(data)){       
                     initialData.push(val)
-                    setExpenses(expenses => [...expenses, {name: key, amount: val.Amount, desciption: val.Description, category: val.Category}])
+                    // console.log(initialData)
+                    // setExpenses(expenses => [...expenses, {name: key, amount: val.Amount, desciption: val.Description, category: val.Category}])
                 }
+                dispatch(expenseActions.reloadUserDetails(initialData))
             })
             // console.log(initialData)
-    },[loggedEmail, ExpensesLIST])
+    },[loggedEmail, ExpensesLIST, dispatch])
  
 
     const submitHandler = (e) => {
@@ -70,13 +79,15 @@ const Expenses = (props) => {
             // fetchedName = data.name
             // console.log('name= ' + fetchedName)
             alert('Data is sent to Backend successfully!!!')
-            setExpenses([...expenses, {name: data.name, amount:enteredAmount, desciption: enteredDescription, category: enteredCategory}])
+            // setExpenses([...expenses, {name: data.name, amount:enteredAmount, desciption: enteredDescription, category: enteredCategory}])
+            dispatch(expenseActions.addUser({name: data.name, Amount:enteredAmount, Description: enteredDescription, Category: enteredCategory}))
             
         }).catch(err =>{
             alert(err.errorMessage)
         })
         
     }
+    
     return (
         <>
         <section className={classes.auth}>
@@ -118,7 +129,7 @@ const Expenses = (props) => {
         </div>
       </form>
     </section>
-    <ExpensesList expenses ={expenses}></ExpensesList>
+    <ExpensesList expenses ={myExpensesDetails} ></ExpensesList>
     
     </>
     )

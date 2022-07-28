@@ -1,11 +1,16 @@
 import { useState, useRef} from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import classes from './AuthForm.module.css';
+import { useDispatch, useSelector } from 'react-redux';
+import { authActions } from '../../store/index'
 
 const AuthForm = () => {
   const history = useHistory()
   const emialInputRef = useRef()
   const passwordInputRef = useRef()
+  const dispatch = useDispatch();
+  let loginDetails = useSelector(state => state.auth)
+  console.log(loginDetails.userId)
 
   const [isLogin, setIsLogin] = useState(true);
   const [isLoading, setIsLoading] = useState(false)
@@ -20,9 +25,10 @@ const AuthForm = () => {
 
     const enteredEmail = emialInputRef.current.value;
     const enteredPassword = passwordInputRef.current.value;
+    setIsLoading(true)
+
 
     let url;
-    setIsLoading(true)
     if(isLogin){
       url = 'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyD-3XCAdzpwYYUEDVAj_KcDkgVwz4d57OU'
     }else{
@@ -55,6 +61,7 @@ const AuthForm = () => {
     }).then((data) => {
         alert('Authentication Successful')
         console.log('User has successfully signed up')
+        dispatch(authActions.login({token: data.idToken, userId: enteredEmail.replace('@','').replace('.','')}))
       localStorage.setItem('token', data.idToken)
       localStorage.setItem('email', enteredEmail.replace('@','').replace('.',''))
       history.replace('/Welcome')

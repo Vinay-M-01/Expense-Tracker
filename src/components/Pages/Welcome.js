@@ -1,12 +1,15 @@
 import { Link, useHistory } from "react-router-dom";
+import { authActions } from "../../store";
+import { useDispatch } from "react-redux/es/exports";
 
 const Welcome = (props) => {
+  const dispatch = useDispatch()
 
     const history  = useHistory();
     function logoutHandler(){
         localStorage.clear();
         history.replace('/Login')
-
+        dispatch(authActions.logout())
     };
   return (
     <>
