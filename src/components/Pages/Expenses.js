@@ -1,5 +1,5 @@
 import classes from './Expenses.module.css'
-import { useEffect, useRef} from 'react'
+import { useEffect, useRef, useState} from 'react'
 import ExpensesList from './ExpensesList'
 import { useDispatch, useSelector } from 'react-redux';
 import { expenseActions } from '../../store'
@@ -13,7 +13,10 @@ const Expenses = (props) => {
     const descriptionInputRef = useRef()
     const categoryInputRef = useRef()
     // const [expenses, setExpenses] = useState([])
+    const [premium, setPremium] = useState(false)
     let ExpensesLIST = ExpensesList
+    const totalExpense = myExpensesDetails.reduce((accumulator,curValue)=>parseInt(curValue.Amount) + accumulator,0)
+
 
     // On reload get all the data from the backend 
     useEffect(()=>{
@@ -54,37 +57,42 @@ const Expenses = (props) => {
         // let fetchedName;
 
         // setExpenses([...expenses, {amount:enteredAmount, desciption: enteredDescription, category: enteredCategory}])
-
-        fetch(`https://expense-tracker-3cdd6-default-rtdb.firebaseio.com/${loggedEmail}.json`,{
-            method:"POST",
-            body:JSON.stringify({
-                Amount: enteredAmount,
-                Description: enteredDescription,
-                Category: enteredCategory,
-            })
-        }).then(res =>{
-            console.log(res)
-            if(res.ok){
-                return res.json()
-            }else{
-                return res.json().then(data =>{
-                    let errorMessage = 'Authentication Request Failed';
-                    if(data && data.error && data.error.message){
-                        errorMessage = data.error.message
-                    }
-                    throw new Error(errorMessage);
+        if(parseInt(enteredAmount) + totalExpense < 800 || premium === true){
+            fetch(`https://expense-tracker-3cdd6-default-rtdb.firebaseio.com/${loggedEmail}.json`,{
+                method:"POST",
+                body:JSON.stringify({
+                    Amount: enteredAmount,
+                    Description: enteredDescription,
+                    Category: enteredCategory,
                 })
-            }
-        }).then((data) => {
-            // fetchedName = data.name
-            // console.log('name= ' + fetchedName)
-            alert('Data is sent to Backend successfully!!!')
-            // setExpenses([...expenses, {name: data.name, amount:enteredAmount, desciption: enteredDescription, category: enteredCategory}])
-            dispatch(expenseActions.addUser({name: data.name, Amount:enteredAmount, Description: enteredDescription, Category: enteredCategory}))
-            
-        }).catch(err =>{
-            alert(err.errorMessage)
-        })
+            }).then(res =>{
+                console.log(res)
+                if(res.ok){
+                    return res.json()
+                }else{
+                    return res.json().then(data =>{
+                        let errorMessage = 'Authentication Request Failed';
+                        if(data && data.error && data.error.message){
+                            errorMessage = data.error.message
+                        }
+                        throw new Error(errorMessage);
+                    })
+                }
+            }).then((data) => {
+                // fetchedName = data.name
+                // console.log('name= ' + fetchedName)
+                
+                    alert('Data is sent to Backend successfully!!!')
+                    // setExpenses([...expenses, {name: data.name, amount:enteredAmount, desciption: enteredDescription, category: enteredCategory}])
+                    dispatch(expenseActions.addUser({name: data.name, Amount:enteredAmount, Description: enteredDescription, Category: enteredCategory}))
+                
+            }).catch(err =>{
+                alert(err.errorMessage)
+            })
+        }else{
+            return setPremium(true)
+        }
+        
         
     }
     
@@ -118,6 +126,8 @@ const Expenses = (props) => {
 
         <div className={classes.actions}>
           <button type='submit'>Add Expense</button>
+          {premium && <button type='submit'>Activate Premium </button> }
+          {premium && <p> * to add expenses</p>}
 {/*           
           <button
             type='button'
