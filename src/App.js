@@ -4,10 +4,30 @@ import Expenses from "./components/Pages/Expenses";
 import ForgotPassword from "./components/Pages/ForgotPassword";
 import Profile from "./components/Pages/Profile";
 import Welcome from "./components/Pages/Welcome";
+import { useState } from "react";
+import styled, { ThemeProvider } from "styled-components";
+import {lightTheme, darkTheme, GlobalStyles}  from './theme'
+
+const StyledApp = styled.div`
+color: ${(props) => props.theme.fontColor};
+border: ${(props) => props.theme.border}
+`
 
 function App() {
+
+  const [theme, setTheme]= useState("light")
+
+
+
+  const themeToggle = () => {
+    theme === "light" ? setTheme("dark") : setTheme("light")
+  }
   return (
+    <ThemeProvider theme={theme === "light" ? lightTheme : darkTheme}>
+      <GlobalStyles/>
+      <StyledApp>
     <div>
+      <button onClick={() => themeToggle()}> Theme</button>
       <Switch>
 
       <Route path="/Welcome">
@@ -33,6 +53,8 @@ function App() {
 
       </Switch>
     </div>
+    </StyledApp>
+    </ThemeProvider>
   );
 }
 

@@ -3,6 +3,7 @@ import { useEffect, useRef, useState} from 'react'
 import ExpensesList from './ExpensesList'
 import { useDispatch, useSelector } from 'react-redux';
 import { expenseActions } from '../../store'
+import { CSVLink } from 'react-csv';
 
 const Expenses = (props) => {
     const dispatch = useDispatch()
@@ -17,6 +18,17 @@ const Expenses = (props) => {
     let ExpensesLIST = ExpensesList
     const totalExpense = myExpensesDetails.reduce((accumulator,curValue)=>parseInt(curValue.Amount) + accumulator,0)
 
+    const headers = [
+        {label: 'Amount' ,key: 'Amount'},
+        {label: 'Description' ,key: 'Description'},
+        {label: 'Category' ,key: 'Category'}
+    ];
+
+    const csvReport = {
+        filename: 'Expense_Report.csv',
+        headers: headers,
+        data: myExpensesDetails
+    };
 
     // On reload get all the data from the backend 
     useEffect(()=>{
@@ -127,7 +139,7 @@ const Expenses = (props) => {
         <div className={classes.actions}>
           <button type='submit'>Add Expense</button>
           {premium && <button type='submit'>Activate Premium </button> }
-          {premium && <p> * to add expenses</p>}
+          {premium && <button><CSVLink {...csvReport}>Download_Expense</CSVLink></button> }
 {/*           
           <button
             type='button'
