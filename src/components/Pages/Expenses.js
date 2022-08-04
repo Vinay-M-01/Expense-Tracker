@@ -15,6 +15,7 @@ const Expenses = (props) => {
     const categoryInputRef = useRef()
     // const [expenses, setExpenses] = useState([])
     const [premium, setPremium] = useState(false)
+    const [activatePremium, setActivatePremium] = useState(false)
     let ExpensesLIST = ExpensesList
     const totalExpense = myExpensesDetails.reduce((accumulator,curValue)=>parseInt(curValue.Amount) + accumulator,0)
 
@@ -56,8 +57,12 @@ const Expenses = (props) => {
                 }
                 dispatch(expenseActions.reloadUserDetails(initialData))
             })
+            if(totalExpense > 800){
+                setActivatePremium(true)
+                dispatch(expenseActions.togglePremiumState())
+            }
             // console.log(initialData)
-    },[loggedEmail, ExpensesLIST, dispatch])
+    },[loggedEmail, ExpensesLIST, dispatch, totalExpense])
  
 
     const submitHandler = (e) => {
@@ -69,7 +74,7 @@ const Expenses = (props) => {
         // let fetchedName;
 
         // setExpenses([...expenses, {amount:enteredAmount, desciption: enteredDescription, category: enteredCategory}])
-        if(parseInt(enteredAmount) + totalExpense < 800 || premium === true){
+        if(parseInt(enteredAmount) + totalExpense < 800 || activatePremium){
             fetch(`https://expense-tracker-3cdd6-default-rtdb.firebaseio.com/${loggedEmail}.json`,{
                 method:"POST",
                 body:JSON.stringify({
@@ -104,12 +109,17 @@ const Expenses = (props) => {
         }else{
             return setPremium(true)
         }
-        
-        
+          
+    }
+    const activatePremiumHandler = () =>{
+        alert('Activate Premium ?')
+        setActivatePremium(true)
+        dispatch(expenseActions.togglePremiumState())
     }
     
     return (
         <>
+        {activatePremium && <button><CSVLink {...csvReport}>Download_Expense</CSVLink></button> }
         <section className={classes.auth}>
       <h1>Daily Expenses</h1>
       
@@ -130,6 +140,7 @@ const Expenses = (props) => {
           <select name="category" id="category" ref={categoryInputRef}>
             <option value="Food">Food</option>
             <option value="Petrol">Petrol</option>
+            <option value="Movies">Movies</option>
             <option value="Salary">Salary</option>
             <option value="Bill">Bill</option>
             <option value="others">others</option>
@@ -138,8 +149,8 @@ const Expenses = (props) => {
 
         <div className={classes.actions}>
           <button type='submit'>Add Expense</button>
-          {premium && <button type='submit'>Activate Premium </button> }
-          {premium && <button><CSVLink {...csvReport}>Download_Expense</CSVLink></button> }
+          {premium && <button onClick={activatePremiumHandler}>Activate Premium </button> }
+          
 {/*           
           <button
             type='button'

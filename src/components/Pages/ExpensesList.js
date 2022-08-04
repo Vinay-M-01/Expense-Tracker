@@ -1,4 +1,4 @@
-
+import classes from './ExpensesList.module.css'
 import { useSelector } from 'react-redux';
 
 
@@ -87,21 +87,23 @@ const ExpensesList = (props) => {
 
     return (
       <>
-        <li key={Math.random.toString()}>
-          {item.Amount}
-          {" - "}
-          {item.Description}
-          {" - "}
-          {item.Category}
+        <li key={Math.random.toString()} className={classes.list}>
+          <span className={classes.subList}>{item.Amount}</span>
+          <span className={classes.subList}>{item.Description}</span>
+          <span className={classes.subList}>{item.Category}</span>
 
-          <button onClick={()=> editButtonHandler({Amount: item.Amount, Category: item.Category, Description: item.Description})}> Edit </button>
-          <button onClick={() => deleteButtonHandler({Description: item.Description})}> Delete </button> 
+          <button onClick={()=> editButtonHandler({Amount: item.Amount, Category: item.Category, Description: item.Description})} className={classes.subList1}> Edit </button>
+          <button onClick={() => deleteButtonHandler({Description: item.Description})} className={classes.subList1}> Delete </button> 
         </li>
       </>
     );
   });
 
-  return <ul>{myExpenses}</ul>;
+  return(
+  <ul className={classes.mainList}>
+
+  {myExpenses.length===0 ? <h1 style={{color:'white'}}>No Expenses Added</h1> : myExpenses }
+  </ul>);
 };
 
 export default ExpensesList;

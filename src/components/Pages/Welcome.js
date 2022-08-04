@@ -13,7 +13,7 @@ const Welcome = (props) => {
     };
   return (
     <>
-    <button onClick={logoutHandler}> LogOut </button>
+    <button onClick={logoutHandler} style={{backgroundColor:"GrayText", borderRadius:"4px", padding: "5px"}}> LogOut  </button>
     <div style={{ border: "1px solid black", padding: "10px" }}>
       <span
         style={{

@@ -7,6 +7,8 @@ import Welcome from "./components/Pages/Welcome";
 import { useState } from "react";
 import styled, { ThemeProvider } from "styled-components";
 import {lightTheme, darkTheme, GlobalStyles}  from './theme'
+// import { expenseActions } from "./store";
+import { useSelector } from "react-redux";
 
 const StyledApp = styled.div`
 color: ${(props) => props.theme.fontColor};
@@ -14,6 +16,7 @@ border: ${(props) => props.theme.border}
 `
 
 function App() {
+const premiumState = useSelector(state => state.expenses.premiumState)
 
   const [theme, setTheme]= useState("light")
 
@@ -27,7 +30,7 @@ function App() {
       <GlobalStyles/>
       <StyledApp>
     <div>
-      <button onClick={() => themeToggle()}> Theme</button>
+      {premiumState && <button onClick={() => themeToggle()}> Theme</button>}
       <Switch>
 
       <Route path="/Welcome">

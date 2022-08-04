@@ -1,0 +1,14 @@
+.mainForm{
+    text-align: center;
+    margin-top: 10px;
+}
+.profilePhoto{
+    border: 5px solid #9f5ccc;
+    border-radius: 40px;
+    width: 300px;
+    margin-left: 25px;
+}
+.header{
+    color: white ;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+}

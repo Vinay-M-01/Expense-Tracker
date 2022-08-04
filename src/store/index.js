@@ -28,6 +28,7 @@ const initialAuthState = {
   // For tracking expenses
   const initialExpenseState = {
     expensesState: [],
+    premiumState:false
   }
   
   const expenseSlice = createSlice({
@@ -41,6 +42,10 @@ const initialAuthState = {
       reloadUserDetails(state, action){
         state.expensesState = action.payload
       },
+
+      togglePremiumState(state){
+        state.premiumState = true
+      }
     },
   });
 

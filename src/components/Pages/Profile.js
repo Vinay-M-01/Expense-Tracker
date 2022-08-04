@@ -1,7 +1,8 @@
 
 import { useRef, useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
-
+import './Profile.css'
+import classes from '../Pages/Expenses.module.css'
 
 const Profile = (props) => {
 
@@ -88,23 +89,32 @@ const Profile = (props) => {
         .catch(err => console.log(err.message))
     }
     return(
-        <form onSubmit={submitHandler}>
-            <button onClick={() =>{ history.replace('./Welcome')}} style={{fontSize:"17px", color:"brown"}}> Back </button>
-            <h2> Contact Details</h2>
-            <button> Cancel </button>
-            <div>
-                <span>
-                    <label htmlFor="fullName">Full Name: </label>
-                    <input type="text" ref={enteredNameRef} defaultValue={userName} />
-                </span>
-                <span>
-                    <label htmlFor="profilePhoto">Profile Photo URL: </label>
-                    <input type="link" ref={enteredPhotoUrlRef} defaultValue={link}/>
-                </span>
+        <>
+        {/* <button onClick={() =>{ history.replace('./Welcome')}} style={{fontSize:"17px", color:"brown"}}> Back </button> */}
+        <button onClick={() =>{ history.replace('./Welcome')}} style={{fontSize:"17px", color:"brown", float:"right"}}> Cancel </button>
+        <form className="mainForm" onSubmit={submitHandler}>
+            
+            
+            <img className="profilePhoto" src={link} alt={'nothing'} />
+
+            <div className={classes.auth}>
+            <h2 className="header"> Contact Details</h2>
+           
+            <div className={classes.control}>
+                <label htmlFor="fullName">Full Name: </label>
+                <input type="text" ref={enteredNameRef} defaultValue={userName} />
             </div>
+            <div className={classes.control}>
+                <label htmlFor="profilePhoto">Profile Photo URL: </label>
+                <input type="link" ref={enteredPhotoUrlRef} defaultValue={link}/>
+            </div>
+            <div className={classes.actions}>
             <button type="submit" className="update"> Update </button>
             {notVerified && <button onClick={verifyEmailHandler}> Verify Email</button>}
+            </div>
+            </div>
         </form>
+        </>
     )
 }
  
